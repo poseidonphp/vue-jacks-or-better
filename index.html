@@ -1,0 +1,237 @@
+<html>
+<head>
+  <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <script src="http://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+  <script   src="http://code.jquery.com/jquery-3.3.1.min.js"   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="   crossorigin="anonymous"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+  <style type="text/css">
+  .semiClear {
+  	opacity:.75;
+  	filter: alpha(opacity=75);
+  	-moz-opacity: 0.75;
+  }
+  body {
+    background-color: #cccccc;
+  }
+  .holding-button {
+    background-color: #FFC433;
+  }
+  </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Double Double Bonus Jacks or Better</title>
+
+</head>
+
+<body>
+<div id="body">
+  <div align="center" id="outer" style="background-color:#960; width:650px">
+  	<div align="center" id="inner" style="background-color:#FF9">
+
+
+
+
+
+ <div align="center" id="cards">
+ <table align="center" width="500" cellspacing="0" cellpadding="0" border="0">
+ 	<tr>
+     <td colspan="6"><center><img src="images/top_jacksorbetter.png"></center></td>
+     </tr>
+
+   <tr bgcolor="#960" align="center">
+     	<td width="250"><strong>Hand</strong></td>
+         <td><strong>.25</strong></td>
+         <td><strong>.50</strong></td>
+         <td><strong>.75</strong></td>
+         <td><strong>1.00</strong></td>
+         <td><strong>1.25</strong></td>
+   </tr>
+
+ </table>
+
+ <table align="center" width="500" border="0" cellpadding="0" cellspacing="0">
+ 	<tr height="140" valign="bottom">
+     	   <td align="center" v-for="(card, index) in player_cards">
+           <img :src="imageSrc(card.file)" />
+           <button v-show="dealt" @click="hold(card)" class="btn" v-bind:class="{ 'btn-warning': holding.includes(card.id) }">{{ holding.includes(card.id) ? 'drop' : 'hold' }}</button>
+         </td>
+
+ 	</tr>
+ </table>
+<table v-show="holding.length > 0">
+  <tr>
+    <th>Holding</th>
+  </tr>
+  <tr v-for="held in holding">
+    <td>
+        {{ held.name }}
+    </td>
+  </tr>
+</table>
+
+
+ </div>
+ <div id="dealButton">
+    <input type="button" @click="deal" value="DEAL"  style="padding:6px;" v-show="!dealt" />
+ </div>
+
+ <div id="hold">
+ </div>
+ <center>
+ <table width="500" align="center" cellpadding="0" cellspacing="0">
+     <tr>
+         <td align="center">
+             <div id="bet">
+ 			<input type="button" value="Bet One" @click="bet = bet + .25" style="padding:6px" v-show="bet < 1.25 && bettable" /><br />
+  			Current Bet: {{ bet }}
+             </div>
+         </td>
+
+         <td align="center" >
+             <div id="credits">
+    			Credits: {{ credits }}
+     		</div>
+         </td>
+     </tr>
+ </table>
+ </center>
+ <div id="draw">
+ </div>
+ <br />
+ <br />
+
+  </div>
+  </div>
+
+</div>
+
+
+  <script>
+    var app = new Vue({
+        el: '#body',
+        data: {
+          bet: .25,
+          bettable: true,
+          credits: 10.00,
+          dealt: false,
+          holding: [],
+          cards_dealt: [],
+
+          player_cards: [
+            {suit: 'na', number: 'n', value: 0, file: 'b2fv', name: '?'},
+            {suit: 'na', number: 'n', value: 0, file: 'b2fv', name: '?'},
+            {suit: 'na', number: 'n', value: 0, file: 'b2fv', name: '?'},
+            {suit: 'na', number: 'n', value: 0, file: 'b2fv', name: '?'},
+            {suit: 'na', number: 'n', value: 0, file: 'b2fv', name: '?'}
+          ],
+          cards: [
+            {suit: 'diamonds', number: 'A', value: 1, file: 'da', name: 'Ace of Diamonds'},
+            {suit: 'diamonds', number: '2', value: 2, file: 'd2', name: 'Two of Diamonds'},
+            {suit: 'diamonds', number: '3', value: 3, file: 'd3', name: 'Three of Diamonds'},
+            {suit: 'diamonds', number: '4', value: 4, file: 'd4', name: 'Four of Diamonds'},
+            {suit: 'diamonds', number: '5', value: 5, file: 'd5', name: 'Five of Diamonds'},
+            {suit: 'diamonds', number: '6', value: 6, file: 'd6', name: 'Six of Diamonds'},
+            {suit: 'diamonds', number: '7', value: 7, file: 'd7', name: 'Seven of Diamonds'},
+            {suit: 'diamonds', number: '8', value: 8, file: 'd8', name: 'Eight of Diamonds'},
+            {suit: 'diamonds', number: '9', value: 9, file: 'd9', name: 'Nine of Diamonds'},
+            {suit: 'diamonds', number: '10', value: 10, file: 'd10', name: 'Ten of Diamonds'},
+            {suit: 'diamonds', number: 'J', value: 11, file: 'dj', name: 'Jack of Diamonds'},
+            {suit: 'diamonds', number: 'Q', value: 12, file: 'dq', name: 'Queen of Diamonds'},
+            {suit: 'diamonds', number: 'K', value: 13, file: 'dk', name: 'King of Diamonds'},
+            {suit: 'clubs', number: 'A', value: 1, file: 'ca', name: 'Ace of Clubs'},
+            {suit: 'clubs', number: '2', value: 2, file: 'c2', name: 'Two of Clubs'},
+            {suit: 'clubs', number: '3', value: 3, file: 'c3', name: 'Three of Clubs'},
+            {suit: 'clubs', number: '4', value: 4, file: 'c4', name: 'Four of Clubs'},
+            {suit: 'clubs', number: '5', value: 5, file: 'c5', name: 'Five of Clubs'},
+            {suit: 'clubs', number: '6', value: 6, file: 'c6', name: 'Six of Clubs'},
+            {suit: 'clubs', number: '7', value: 7, file: 'c7', name: 'Seven of Clubs'},
+            {suit: 'clubs', number: '8', value: 8, file: 'c8', name: 'Eight of Clubs'},
+            {suit: 'clubs', number: '9', value: 9, file: 'c9', name: 'Nine of Clubs'},
+            {suit: 'clubs', number: '10', value: 10, file: 'c10', name: 'Ten of Clubs'},
+            {suit: 'clubs', number: 'J', value: 11, file: 'cj', name: 'Jack of Clubs'},
+            {suit: 'clubs', number: 'Q', value: 12, file: 'cq', name: 'Queen of Clubs'},
+            {suit: 'clubs', number: 'K', value: 13, file: 'ck', name: 'King of Clubs'},
+            {suit: 'hearts', number: 'A', value: 1, file: 'ha', name: 'Ace of Hearts'},
+            {suit: 'hearts', number: '2', value: 2, file: 'h2', name: 'Two of Hearts'},
+            {suit: 'hearts', number: '3', value: 3, file: 'h3', name: 'Three of Hearts'},
+            {suit: 'hearts', number: '4', value: 4, file: 'h4', name: 'Four of Hearts'},
+            {suit: 'hearts', number: '5', value: 5, file: 'h5', name: 'Five of Hearts'},
+            {suit: 'hearts', number: '6', value: 6, file: 'h6', name: 'Six of Hearts'},
+            {suit: 'hearts', number: '7', value: 7, file: 'h7', name: 'Seven of Hearts'},
+            {suit: 'hearts', number: '8', value: 8, file: 'h8', name: 'Eight of Hearts'},
+            {suit: 'hearts', number: '9', value: 9, file: 'h9', name: 'Nine of Hearts'},
+            {suit: 'hearts', number: '10', value: 10, file: 'h10', name: 'Ten of Hearts'},
+            {suit: 'hearts', number: 'J', value: 11, file: 'hj', name: 'Jack of Hearts'},
+            {suit: 'hearts', number: 'Q', value: 12, file: 'hq', name: 'Queen of Hearts'},
+            {suit: 'hearts', number: 'K', value: 13, file: 'hk', name: 'King of Hearts'},
+            {suit: 'spades', number: 'A', value: 1, file: 'sa', name: 'Ace of Spades'},
+            {suit: 'spades', number: '2', value: 2, file: 's2', name: 'Two of Spades'},
+            {suit: 'spades', number: '3', value: 3, file: 's3', name: 'Three of Spades'},
+            {suit: 'spades', number: '4', value: 4, file: 's4', name: 'Four of Spades'},
+            {suit: 'spades', number: '5', value: 5, file: 's5', name: 'Five of Spades'},
+            {suit: 'spades', number: '6', value: 6, file: 's6', name: 'Six of Spades'},
+            {suit: 'spades', number: '7', value: 7, file: 's7', name: 'Seven of Spades'},
+            {suit: 'spades', number: '8', value: 8, file: 's8', name: 'Eight of Spades'},
+            {suit: 'spades', number: '9', value: 9, file: 's9', name: 'Nine of Spades'},
+            {suit: 'spades', number: '10', value: 10, file: 's10', name: 'Ten of Spades'},
+            {suit: 'spades', number: 'J', value: 11, file: 'sj', name: 'Jack of Spades'},
+            {suit: 'spades', number: 'Q', value: 12, file: 'sq', name: 'Queen of Spades'},
+            {suit: 'spades', number: 'K', value: 13, file: 'sk', name: 'King of Spades'}
+          ]
+        },
+        methods: {
+          imageSrc: function(name) {
+            return 'images/' + name + '.png';
+          },
+          hold: function(player_card_index) {
+            found = false;
+              for(i=0; i<this.holding.length; i++)
+              {
+                if(this.holding[i].id == player_card_index)
+                {
+                  found = true;
+                  this.holding.splice(i,1);
+                }
+              }
+              if(!found)
+              {
+                this.holding.push(player_card_index);
+              }
+          },
+
+          draw: function() {
+              for(i=0; i < 5-this.holding.length; i++)
+              {
+
+              }
+          },
+          deal: function() {
+                used = [];
+                this.cards_dealt = [];
+                this.player_cards = [];
+
+                for(i=0; i < 5; i++)
+                {
+                    num = Math.floor(Math.random() * 52)
+
+                    if(used.includes(num))
+                    {
+                      i--;
+                    } else {
+                      used.push(num);
+                      this.cards_dealt.push(num);
+                      Vue.set(this.cards[num], 'id', num);
+                      this.player_cards.push(this.cards[num]);
+                    }
+                }
+                this.credits = this.credits - this.bet;
+                this.bettable = false;
+                this.dealt = true;
+            }
+        }
+    });
+  </script>
+</body>
+</html>
